@@ -1,0 +1,17 @@
+name: Notify Stale PR
+
+
+on:
+  schedule:
+    - cron: "* * * * *"
+  workflow_dispatch:
+
+
+jobs:
+  notify:
+    name: Test Trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo Something
+        run: echo "Sending notification..."
+
