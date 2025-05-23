@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: Install tools
         run: |
-          apt update
-          apt install -y curl jq
+          sudo apt update
+          sudo apt install -y curl jq
 
       - name: Check for stale PRs
         id: stale_pr
