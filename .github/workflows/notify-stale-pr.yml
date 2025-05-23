@@ -46,7 +46,7 @@ jobs:
               updated_at=$(echo "$pr" | jq -r '.updated_at');
               pr_link=$(echo "$pr" | jq -r '.html_url');
 
-              if is_stale "$created_at"; then
+              if is_stale "$updated_at"; then
                   message+="${count}. <${pr_link}|${title}>\n"; # title
                   message+="\t• :slightly_smiling_face: Created By: <${user_link}|${user}>\n"; # user
                   message+="\t• :date: *Opened At:* ${created_at}\n"; # opened date
@@ -76,4 +76,3 @@ jobs:
                 text:
                   type: "mrkdwn"
                   text: "*Stale Pull Requests* \n ${{ steps.stale_pr.outputs.message }}"
-
