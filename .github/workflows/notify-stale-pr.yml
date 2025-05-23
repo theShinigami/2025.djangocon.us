@@ -3,7 +3,7 @@ name: Notify Stale PR
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: '*/5 * * * *'
 
 
 jobs:
