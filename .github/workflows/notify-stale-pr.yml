@@ -11,10 +11,10 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      # - name: Install tools
-      #   run: |
-      #     sudo apt update
-      #     sudo apt install -y curl jq
+      - name: Install tools
+        run: |
+          sudo apt update
+          sudo apt install -y curl jq
 
       - name: Check for stale PRs
         id: stale_pr
@@ -76,3 +76,4 @@ jobs:
                 text:
                   type: "mrkdwn"
                   text: "*Stale Pull Requests* \n ${{ steps.stale_pr.outputs.message }}"
+
