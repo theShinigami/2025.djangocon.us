@@ -3,14 +3,59 @@ name: Notify Stale PR
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: "* * * * *"
+  workflow_dispatch:
 
 
 jobs:
   notify:
-    name: Test Trigger
     runs-on: ubuntu-latest
     steps:
-      - name: Echo Something
-        run: echo "Sending notification..."
+      # - name: Install tools
+      #   run: |
+      #     apt update
+      #     apt install -y curl jq
 
+      - name: Check for stale PRs
+        id: stale_pr
+        run: |
+          DAYS_SINCE_CREATED=0;
+          REPO="djangocon/2025.djangocon.us"
+
+
+          function is_stale() {
+
+              local created_at="$1";
+              local created_ts=$(date -d "$created_at" +%s);
+              local diff_sec=$(($(date +%s) - created_ts));
+              local diff_days=$((diff_sec / 86400));
+
+              if [[ "$diff_days" -le "$DAYS_SINCE_CREATED" ]]; then
+                  return 1;
+              else
+                  return 0;
+              fi;
+
+          }
+
+          message=""
+
+          while read -r pr; do
+              title=$(echo "$pr" | jq -r '.title');
+              user=$(echo "$pr" | jq -r '.user.login');
+              created_at=$(echo "$pr" | jq -r '.created_at');
+              updated_at=$(echo "$pr" | jq -r '.updated_at')
+
+              if is_stale "$created_at"; then
+                  message+="$title - ($user) - ($created_at) - ($updated_at)\n"
+              fi;
+
+          done < <(curl -s "https://api.github.com/repos/$REPO/pulls?state=open" | jq -c '.[]');
+
+          if [[ -n "$message" ]]; then
+              printf "msg=$message" >> "$GITHUB_OUTPUT";
+          fi;
+      
+      - name: "Notify Via Slack"
+        run: |
+          echo "Got output: ${{ steps.stale_pr.outputs.message }}"
