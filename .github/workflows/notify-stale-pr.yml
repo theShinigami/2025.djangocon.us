@@ -13,15 +13,12 @@ jobs:
     steps:
       - name: Install tools
         run: |
-          sudo apt update
-          sudo apt install -y curl jq
+          apt update
+          apt install -y curl jq
 
       - name: Check for stale PRs
         id: stale_pr
         run: |
-          DAYS_SINCE_CREATED=0;
-          REPO="djangocon/2025.djangocon.us"
-
 
           function is_stale() {
 
@@ -80,3 +77,4 @@ jobs:
                 text:
                   type: "mrkdwn"
                   text: "*Stale Pull Requests* \n ${{ steps.stale_pr.outputs.message }}"
+
