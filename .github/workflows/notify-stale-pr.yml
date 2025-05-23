@@ -3,8 +3,7 @@ name: Notify Stale PR
 
 on:
   schedule:
-    - cron: "* * * * *"
-  workflow_dispatch:
+    - cron: "*/5 * * * *"
 
 
 jobs:
