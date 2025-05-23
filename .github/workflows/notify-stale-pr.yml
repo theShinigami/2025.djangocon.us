@@ -27,7 +27,7 @@ jobs:
               local diff_sec=$(($(date +%s) - created_ts));
               local diff_days=$((diff_sec / 86400));
 
-              if [[ "$diff_days" -le "$DAYS_SINCE_CREATED" ]]; then
+              if [[ "$diff_days" -le "${{ vars.DAYS_SINCE_CREATED }}" ]]; then
                   return 1;
               else
                   return 0;
@@ -54,7 +54,7 @@ jobs:
                   ((count++))
               fi;
 
-          done < <(curl -s "https://api.github.com/repos/$REPO/pulls?state=open" | jq -c '.[]');
+          done < <(curl -s "https://api.github.com/repos/${{ vars.REPO }}/pulls?state=open" | jq -c '.[]');
 
           if [[ -n "$message" ]]; then
               echo "-> ${{ secrets.SLACK_CHANNEL_ID }}";
@@ -77,4 +77,3 @@ jobs:
                 text:
                   type: "mrkdwn"
                   text: "*Stale Pull Requests* \n ${{ steps.stale_pr.outputs.message }}"
-
