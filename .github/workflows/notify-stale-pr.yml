@@ -47,15 +47,15 @@ jobs:
               updated_at=$(echo "$pr" | jq -r '.updated_at')
 
               if is_stale "$created_at"; then
-                  message+="$title - ($user) - ($created_at) - ($updated_at)\n"
+                  message+="$title - $user - $created_at - $updated_at\n"
               fi;
 
           done < <(curl -s "https://api.github.com/repos/$REPO/pulls?state=open" | jq -c '.[]');
 
           if [[ -n "$message" ]]; then
-              printf "msg=$message" >> "$GITHUB_OUTPUT";
+              echo "message=$message" >> "$GITHUB_OUTPUT";
           fi;
       
       - name: "Notify Via Slack"
         run: |
-          echo "Got output: ${{ steps.stale_pr.outputs.message }}"
+          printf "Got output: ${{ steps.stale_pr.outputs.message }}"
