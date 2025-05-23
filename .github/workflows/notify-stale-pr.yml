@@ -11,10 +11,10 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Install tools
-        run: |
-          sudo apt update
-          sudo apt install -y curl jq
+      # - name: Install tools
+      #   run: |
+      #     sudo apt update
+      #     sudo apt install -y curl jq
 
       - name: Check for stale PRs
         id: stale_pr
@@ -57,12 +57,11 @@ jobs:
           done < <(curl -s "https://api.github.com/repos/${{ vars.REPO }}/pulls?state=open" | jq -c '.[]');
 
           if [[ -n "$message" ]]; then
-              echo "-> ${{ secrets.SLACK_CHANNEL_ID }}";
-              echo "-> ${{ secrets.SLACK_BOT_TOKEN }}"
               echo "message=$message" >> "$GITHUB_OUTPUT";
           fi;
       
       - name: "Notify Via Slack"
+        if: steps.stale_pr.outputs.message != ''
         uses: slackapi/slack-github-action@v2.1.0
         with:
           method: chat.postMessage
